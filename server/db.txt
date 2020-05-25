@@ -1,0 +1,78 @@
+USE rgr;
+CREATE TABLE song(
+id INT AUTO_INCREMENT,
+   song_name VARCHAR(100),
+   artist VARCHAR(100),
+   genre VARCHAR(100),
+   song_year INT,
+   album_name VARCHAR(100),
+   language_name VARCHAR(100),
+   PRIMARY KEY(id)
+);
+
+CREATE TABLE concert(
+    id INT AUTO_INCREMENT,
+    voting_enable TINYINT(1),
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE vote(
+  id INT AUTO_INCREMENT,
+    song_id INT,
+    concert_id INT,
+    votes INT,
+    is_selected TINYINT(1),
+    PRIMARY KEY(id),
+    FOREIGN KEY(song_id) references song(id),
+    FOREIGN KEY(concert_id) references concert(id)
+);
+
+INSERT INTO song 
+(song_name, artist, genre, song_year, album_name, language_name) 
+values ('Ategnatos', 'Eluveitie', 'Celtic metal', 2019,'Ategnatos', 'English');
+INSERT INTO song 
+(song_name, artist, genre, song_year, album_name, language_name) 
+values ('Jetzt oder nie', 'Oomph!', 'Neue Deutsche Härte', 2015,'XXV', 'German');
+INSERT INTO song 
+(song_name, artist, genre, song_year, album_name, language_name) 
+values ('Je veux', 'Zaz', 'Pop', 2010,'Zaz', 'French');
+INSERT INTO song 
+(song_name, artist, genre, song_year, album_name, language_name) 
+values ('Suden Joik', 'Korpiklaani', 'Folk metal', 2008,'Korven Kuningas', 'Finnish');
+INSERT INTO song 
+(song_name, artist, genre, song_year, album_name, language_name) 
+values ('Wishmaster', 'Nightwish', 'Symphonic metal', 2000,'Wishmaster', 'English');
+INSERT INTO song 
+(song_name, artist, genre, song_year, album_name, language_name) 
+values ('Herr Mannelig', 'In Extremo', 'Folk metal', 1999,'Verehrt und Angespien', 'German');
+INSERT INTO song 
+(song_name, artist, genre, song_year, album_name, language_name) 
+values ('Mine Mine Mine!', 'Wind Rose', 'Power metal', 2019,'Wintersaga', 'English');
+INSERT INTO song 
+(song_name, artist, genre, song_year, album_name, language_name) 
+values ('The King Under the Mountain', 'Wind Rose', 'Power metal', 2019,'Wintersaga', 'English');
+
+INSERT INTO concert 
+(voting_enable) 
+values (false);
+
+INSERT INTO vote(song_id, concert_id, votes, is_selected) 
+VALUES (1, 1, 12, true),
+(2, 1, 10, true),
+(3, 1, 9, true),
+(4, 1, 8, true),
+(5, 1, 7, true);
+
+ALTER TABLE concert ADD number_songs INT;
+
+
+SELECT s.id, s.song_name, s.artist, s.genre, s.song_year, s.album_name, s.language_name
+FROM
+    song s
+LEFT JOIN vote v on s.id = v.song_id AND v.concert_id = 1
+WHERE v.id IS NULL;
+
+SELECT s.id, s.song_name, s.artist, s.genre, s.song_year, s.album_name, s.language_name, v.votes
+FROM vote v
+INNER JOIN song s on s.id = v.song_id
+INNER JOIN concert c on 1 = v.concert_id;
